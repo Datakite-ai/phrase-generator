@@ -158,9 +158,29 @@
     </div>
 
     <script>
-      const API_KEY = "AIzaSyAFcQdFF8y858s9nkn_iCy8JWsKcyU0NS0";
+      const API_KEY_STORAGE_KEY = "ai_studio_api_key";
       const API_URL =
         "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+
+      function getApiKey() {
+        return localStorage.getItem(API_KEY_STORAGE_KEY);
+      }
+
+      function askForApiKeyIfMissing() {
+        let apiKey = getApiKey();
+        if (!apiKey) {
+          apiKey = window.prompt("Please enter your AI Studio API key:");
+          if (apiKey && apiKey.trim()) {
+            localStorage.setItem(API_KEY_STORAGE_KEY, apiKey.trim());
+          } else {
+            alert("API key is required to use this tool.");
+          }
+        }
+      }
+
+      window.addEventListener("load", () => {
+        askForApiKeyIfMissing();
+      });
 
       async function generatePhrases() {
         const description = document
@@ -215,7 +235,17 @@
           `;
 
         try {
-          const response = await fetch(`${API_URL}?key=${API_KEY}`, {
+          const apiKey = getApiKey();
+          if (!apiKey) {
+            statusDiv.textContent =
+              "API key is missing. Please refresh the page and enter your AI Studio API key.";
+            statusDiv.className = "error";
+            btn.disabled = false;
+            askForApiKeyIfMissing();
+            return;
+          }
+
+          const response = await fetch(`${API_URL}?key=${apiKey}`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
