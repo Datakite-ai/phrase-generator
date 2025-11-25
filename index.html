@@ -34,14 +34,39 @@
         box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
           0 8px 10px -6px rgba(0, 0, 0, 0.1);
         width: 100%;
-        max-width: 600px;
-        text-align: center;
+        max-width: 1000px;
+        text-align: left;
       }
 
       h1 {
         margin-bottom: 1.5rem;
-        font-size: 1.8rem;
+        font-size: 1.9rem;
         color: #111827;
+        text-align: center;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .section-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        color: #111827;
+      }
+
+      .section {
+        margin-top: 1.5rem;
+      }
+
+      .section-hint {
+        font-size: 0.85rem;
+        color: #6b7280;
+        margin-bottom: 0.75rem;
       }
 
       .input-group {
@@ -72,6 +97,110 @@
         outline: none;
         border-color: var(--primary-color);
         box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+      }
+
+      input[type="text"] {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        box-sizing: border-box;
+        transition: border-color 0.2s;
+      }
+
+      input[type="text"]:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+      }
+
+      #uploadStatus {
+        margin-top: 0.75rem;
+        min-height: 1.5rem;
+        font-weight: 500;
+      }
+
+      .table-wrapper {
+        overflow-x: auto;
+        margin-top: 0.75rem;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+      }
+
+      thead {
+        background-color: #f9fafb;
+      }
+
+      th,
+      td {
+        padding: 0.5rem 0.75rem;
+        border-bottom: 1px solid #e5e7eb;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      th {
+        font-weight: 600;
+        color: #374151;
+        white-space: nowrap;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      .status-pill {
+        display: inline-block;
+        padding: 0.1rem 0.5rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+
+      .status-pill--pending {
+        background-color: #e5e7eb;
+        color: #374151;
+      }
+
+      .status-pill--uploading {
+        background-color: #dbeafe;
+        color: #1d4ed8;
+      }
+
+      .status-pill--success {
+        background-color: #dcfce7;
+        color: #166534;
+      }
+
+      .status-pill--error {
+        background-color: #fee2e2;
+        color: #b91c1c;
+      }
+
+      .action-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+      }
+
+      .action-button {
+        background-color: #e5e7eb;
+        color: #111827;
+        border: none;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.15s;
+      }
+
+      .action-button:hover {
+        background-color: #d1d5db;
       }
 
       button {
@@ -142,19 +271,101 @@
     <div class="container">
       <h1>Training Phrase Generator</h1>
 
-      <div class="input-group">
-        <label for="intentDescription">Intent Description</label>
-        <textarea
-          id="intentDescription"
-          placeholder="e.g., I want to reset my password because I forgot it..."
-        ></textarea>
+      <div class="layout">
+        <div>
+          <h2 class="section-title">API Settings</h2>
+
+          <div class="input-group">
+            <label for="baseUrl">Base URL</label>
+            <input type="text" id="baseUrl" value="builder.datakite.app" />
+          </div>
+
+          <div class="input-group">
+            <label for="assistantCode">Assistant Code</label>
+            <input type="text" id="assistantCode" value="li6monObUb" />
+          </div>
+
+          <div class="input-group">
+            <label for="versionCode">Version Code</label>
+            <input type="text" id="versionCode" value="li68VXoo7d" />
+          </div>
+
+          <div class="input-group">
+            <label for="intentCode">Intent Code</label>
+            <input
+              type="text"
+              id="intentCode"
+              placeholder="Required intent code"
+            />
+          </div>
+
+          <div class="input-group">
+            <label for="jwtToken">JWT Token</label>
+            <textarea
+              id="jwtToken"
+              rows="4"
+              placeholder="Required JWT token (with or without 'Bearer')"
+            ></textarea>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="section-title">Intent & Generation</h2>
+
+          <div class="input-group">
+            <label for="intentName">Intent Name</label>
+            <input
+              type="text"
+              id="intentName"
+              placeholder="e.g., reset_password"
+            />
+          </div>
+
+          <div class="input-group">
+            <label for="intentDescription">Intent Description</label>
+            <textarea
+              id="intentDescription"
+              placeholder="e.g., I want to reset my password because I forgot it..."
+            ></textarea>
+          </div>
+
+          <button id="generateBtn" onclick="generatePhrases()">
+            Generate & Send to API
+          </button>
+
+          <div id="status"></div>
+          <div id="uploadStatus"></div>
+        </div>
       </div>
 
-      <button id="generateBtn" onclick="generatePhrases()">
-        Generate & Download Excel
-      </button>
-
-      <div id="status"></div>
+      <div class="section">
+        <h2 class="section-title">Files & API Status</h2>
+        <p class="section-hint">
+          Each generated Excel file appears here with its API call status. You
+          can download any file or retry failed API calls.
+        </p>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>File</th>
+                <th>Type</th>
+                <th>Language</th>
+                <th>Language ID</th>
+                <th>Status</th>
+                <th>Last HTTP</th>
+                <th>Error</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="filesTableBody">
+              <tr>
+                <td colspan="8">No files yet. Generate to see API activity.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
     <script>
@@ -178,6 +389,178 @@
         }
       }
 
+      function getApiSettings() {
+        const baseUrlInput = document.getElementById("baseUrl");
+        const assistantCodeInput = document.getElementById("assistantCode");
+        const versionCodeInput = document.getElementById("versionCode");
+        const intentCodeInput = document.getElementById("intentCode");
+        const jwtTokenInput = document.getElementById("jwtToken");
+
+        return {
+          baseUrl: baseUrlInput ? baseUrlInput.value.trim() : "",
+          assistantCode: assistantCodeInput
+            ? assistantCodeInput.value.trim()
+            : "",
+          versionCode: versionCodeInput ? versionCodeInput.value.trim() : "",
+          intentCode: intentCodeInput ? intentCodeInput.value.trim() : "",
+          jwtToken: jwtTokenInput ? jwtTokenInput.value.trim() : "",
+        };
+      }
+
+      function buildBaseUrl(rawBaseUrl) {
+        if (!rawBaseUrl) {
+          return "";
+        }
+        const trimmed = rawBaseUrl.replace(/\/+$/, "");
+        if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+          return trimmed;
+        }
+        return `https://${trimmed}`;
+      }
+
+      const filesRegistry = {};
+      let fileSequence = 0;
+
+      function registerFileForTracking({ type, lang, fileName, base64Data }) {
+        const id = `f_${Date.now()}_${fileSequence++}`;
+        const languageId = lang === "ar" ? 1 : 2;
+
+        filesRegistry[id] = {
+          id,
+          type,
+          lang,
+          languageId,
+          fileName,
+          base64Data,
+          status: "pending",
+          lastHttpStatus: "",
+          errorMessage: "",
+          attempts: 0,
+          lastUpdated: new Date().toLocaleString(),
+        };
+
+        renderFilesTable();
+        return id;
+      }
+
+      function renderFilesTable() {
+        const tbody = document.getElementById("filesTableBody");
+        if (!tbody) {
+          return;
+        }
+
+        const records = Object.values(filesRegistry);
+        tbody.innerHTML = "";
+
+        if (records.length === 0) {
+          const row = document.createElement("tr");
+          const cell = document.createElement("td");
+          cell.colSpan = 8;
+          cell.textContent = "No files yet. Generate to see API activity.";
+          row.appendChild(cell);
+          tbody.appendChild(row);
+          return;
+        }
+
+        records.forEach((file) => {
+          const row = document.createElement("tr");
+
+          const typeLabel =
+            file.type === "training_phrase" ? "Training Phrase" : "Keyword";
+          const langLabel = file.lang === "ar" ? "Arabic" : "English";
+
+          const fileCell = document.createElement("td");
+          fileCell.textContent = file.fileName || "";
+          row.appendChild(fileCell);
+
+          const typeCell = document.createElement("td");
+          typeCell.textContent = typeLabel;
+          row.appendChild(typeCell);
+
+          const langCell = document.createElement("td");
+          langCell.textContent = langLabel;
+          row.appendChild(langCell);
+
+          const langIdCell = document.createElement("td");
+          langIdCell.textContent = String(file.languageId || "");
+          row.appendChild(langIdCell);
+
+          const statusCell = document.createElement("td");
+          const statusSpan = document.createElement("span");
+          const statusKey = (file.status || "pending").toLowerCase();
+          statusSpan.className = `status-pill status-pill--${statusKey}`;
+          statusSpan.textContent = (file.status || "pending").toUpperCase();
+          statusCell.appendChild(statusSpan);
+          row.appendChild(statusCell);
+
+          const httpCell = document.createElement("td");
+          httpCell.textContent = file.lastHttpStatus || "-";
+          row.appendChild(httpCell);
+
+          const errorCell = document.createElement("td");
+          errorCell.textContent = file.errorMessage || "-";
+          row.appendChild(errorCell);
+
+          const actionsCell = document.createElement("td");
+          actionsCell.className = "action-buttons";
+
+          const downloadBtn = document.createElement("button");
+          downloadBtn.type = "button";
+          downloadBtn.textContent = "Download";
+          downloadBtn.className = "action-button";
+          downloadBtn.disabled = !file.base64Data;
+          downloadBtn.addEventListener("click", () => downloadFile(file.id));
+
+          const retryBtn = document.createElement("button");
+          retryBtn.type = "button";
+          retryBtn.textContent = "Retry";
+          retryBtn.className = "action-button";
+          retryBtn.addEventListener("click", () => retryUpload(file.id));
+
+          actionsCell.appendChild(downloadBtn);
+          if ((file.status || "").toLowerCase() === "error") {
+            actionsCell.appendChild(retryBtn);
+          }
+          row.appendChild(actionsCell);
+
+          tbody.appendChild(row);
+        });
+      }
+
+      function downloadFile(fileId) {
+        const file = filesRegistry[fileId];
+        if (!file || !file.base64Data) {
+          return;
+        }
+
+        const binaryString = atob(file.base64Data);
+        const len = binaryString.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+
+        const blob = new Blob([bytes], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = file.fileName || "data.xlsx";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      function retryUpload(fileId) {
+        const file = filesRegistry[fileId];
+        if (!file) {
+          return;
+        }
+        uploadExcelBase64(fileId, file.base64Data, file.type, file.lang);
+      }
+
       window.addEventListener("load", () => {
         askForApiKeyIfMissing();
       });
@@ -188,6 +571,37 @@
           .value.trim();
         const statusDiv = document.getElementById("status");
         const btn = document.getElementById("generateBtn");
+
+        const intentNameInput = document.getElementById("intentName");
+        const intentCodeInput = document.getElementById("intentCode");
+        const jwtTokenInput = document.getElementById("jwtToken");
+        const intentNameValue = intentNameInput
+          ? intentNameInput.value.trim()
+          : "";
+        const intentCodeValue = intentCodeInput
+          ? intentCodeInput.value.trim()
+          : "";
+        const jwtTokenValue = jwtTokenInput
+          ? jwtTokenInput.value.trim()
+          : "";
+
+        if (!intentNameValue) {
+          statusDiv.textContent = "Please enter an intent name.";
+          statusDiv.className = "error";
+          return;
+        }
+
+        if (!intentCodeValue) {
+          statusDiv.textContent = "Please enter an intent code.";
+          statusDiv.className = "error";
+          return;
+        }
+
+        if (!jwtTokenValue) {
+          statusDiv.textContent = "Please enter a JWT token.";
+          statusDiv.className = "error";
+          return;
+        }
 
         if (!description) {
           statusDiv.textContent = "Please enter an intent description.";
@@ -288,8 +702,8 @@
             throw new Error("Invalid response format from AI");
           }
 
-          // Generate a safe filename prefix from the intent description (first 3-4 words)
-          const intentName = description
+          // Generate a safe filename prefix from the intent name (first 3-4 words)
+          const intentName = intentNameValue
             .split(/\s+/)
             .slice(0, 4)
             .join("_")
@@ -334,7 +748,8 @@
             1500
           );
 
-          statusDiv.textContent = "Success! Downloading 4 Excel files...";
+          statusDiv.textContent =
+            "Success! Files generated and API calls started. See table below.";
           statusDiv.className = "success";
         } catch (error) {
           console.error(error);
@@ -361,13 +776,175 @@
         const wb = XLSX.utils.book_new();
         const ws = XLSX.utils.aoa_to_sheet(wsData);
         XLSX.utils.book_append_sheet(wb, ws, "Data");
-
+        const wbBinary = XLSX.write(wb, {
+          bookType: "xlsx",
+          type: "binary",
+        });
+        const base64Data = btoa(wbBinary);
         // Filename: intentName - type - lang - timestamp
         const now = new Date();
         const timestamp = now.toISOString().replace(/[:.]/g, "-").slice(0, 19);
         const filename = `${intentName}_${type}_${lang}_${timestamp}.xlsx`;
 
-        XLSX.writeFile(wb, filename);
+        const fileId = registerFileForTracking({
+          type,
+          lang,
+          fileName: filename,
+          base64Data,
+        });
+
+        uploadExcelBase64(fileId, base64Data, type, lang);
+      }
+
+      async function uploadExcelBase64(fileId, base64Data, type, lang) {
+        const uploadStatusDiv = document.getElementById("uploadStatus");
+        const settings = getApiSettings();
+        const normalizedBaseUrl = buildBaseUrl(settings.baseUrl);
+
+        if (
+          !normalizedBaseUrl ||
+          !settings.assistantCode ||
+          !settings.versionCode ||
+          !settings.intentCode ||
+          !settings.jwtToken
+        ) {
+          if (uploadStatusDiv) {
+            uploadStatusDiv.textContent =
+              "Missing API settings. Skipping upload.";
+            uploadStatusDiv.className = "error";
+          }
+          return;
+        }
+
+        const fileRecord = filesRegistry[fileId];
+        const languageId = fileRecord
+          ? fileRecord.languageId
+          : lang === "ar"
+          ? 1
+          : 2;
+        const endpointSegment =
+          type === "training_phrase" ? "training_phrase" : "keyword";
+
+        const url = `${normalizedBaseUrl}/api/intent/${encodeURIComponent(
+          settings.assistantCode
+        )}/${encodeURIComponent(settings.versionCode)}/${encodeURIComponent(
+          settings.intentCode
+        )}/${endpointSegment}/${languageId}/import`;
+
+        if (fileRecord) {
+          filesRegistry[fileId] = {
+            ...fileRecord,
+            status: "uploading",
+            lastHttpStatus: "",
+            errorMessage: "",
+            attempts: (fileRecord.attempts || 0) + 1,
+            lastUpdated: new Date().toLocaleString(),
+          };
+          renderFilesTable();
+        }
+
+        if (uploadStatusDiv) {
+          uploadStatusDiv.textContent = `Uploading ${endpointSegment} (${lang})...`;
+          uploadStatusDiv.className = "loading";
+        }
+
+        try {
+          const formData = new FormData();
+
+          // Convert base64 string back to binary so we can send a real file object
+          const binaryString = atob(base64Data);
+          const len = binaryString.length;
+          const bytes = new Uint8Array(len);
+          for (let i = 0; i < len; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+          }
+
+          const blob = new Blob([bytes], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          });
+          const uploadFileName =
+            fileRecord && fileRecord.fileName ? fileRecord.fileName : "data.xlsx";
+
+          formData.append("file", blob, uploadFileName);
+
+          let authHeader = settings.jwtToken;
+          if (authHeader && !/^Bearer\s+/i.test(authHeader)) {
+            authHeader = `Bearer ${authHeader}`;
+          }
+
+          const response = await fetch(url, {
+            method: "PUT",
+            headers: {
+              Authorization: authHeader,
+            },
+            body: formData,
+          });
+          const responseText = await response.text().catch(() => "");
+
+          if (!response.ok) {
+            const baseMessage = `${response.status} ${response.statusText}`;
+            const bodySnippet = responseText
+              ? ` | Body: ${responseText.slice(0, 300)}`
+              : "";
+            const fullMessage = `${baseMessage}${bodySnippet}`;
+
+            if (fileRecord) {
+              filesRegistry[fileId] = {
+                ...filesRegistry[fileId],
+                status: "error",
+                lastHttpStatus: baseMessage,
+                errorMessage: fullMessage,
+                lastUpdated: new Date().toLocaleString(),
+              };
+              renderFilesTable();
+            }
+
+            if (uploadStatusDiv) {
+              uploadStatusDiv.textContent = `Upload error for ${endpointSegment} (${lang}): ${fullMessage}`;
+              uploadStatusDiv.className = "error";
+            }
+
+            console.error("Upload error", {
+              url,
+              status: baseMessage,
+              body: responseText,
+            });
+            return;
+          }
+
+          if (fileRecord) {
+            filesRegistry[fileId] = {
+              ...filesRegistry[fileId],
+              status: "success",
+              lastHttpStatus: String(response.status),
+              errorMessage: "",
+              lastUpdated: new Date().toLocaleString(),
+            };
+            renderFilesTable();
+          }
+
+          if (uploadStatusDiv) {
+            uploadStatusDiv.textContent = `Uploaded ${endpointSegment} (${lang}) successfully.`;
+            uploadStatusDiv.className = "success";
+          }
+        } catch (error) {
+          console.error(error);
+          if (fileRecord) {
+            filesRegistry[fileId] = {
+              ...filesRegistry[fileId],
+              status: "error",
+              lastHttpStatus: fileRecord.lastHttpStatus || "",
+              errorMessage: error.message || "Unknown error",
+              lastUpdated: new Date().toLocaleString(),
+            };
+            renderFilesTable();
+          }
+
+          if (uploadStatusDiv) {
+            uploadStatusDiv.textContent = `Upload error for ${endpointSegment} (${lang}): ${error.message}`;
+            uploadStatusDiv.className = "error";
+          }
+        }
       }
     </script>
   </body>
